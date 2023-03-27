@@ -3,11 +3,16 @@ import { Form, Image } from "semantic-ui-react";
 import { useFormik } from "formik";
 import { useDropzone } from "react-dropzone";
 import { image } from "../../../../assets";
+import { User } from "../../../../api";
+import { useAuth } from "../../../../hooks";
 import { initialValues, validationSchema } from './UserForm.form';
 import "./UserForm.scss";
 
+const userController = new User();
+
 export function UserForm(props) {
     const { close, onReload, user } = props;
+    const { accessToken } = useAuth();
 
     const formik = useFormik({
         initialValues: initialValues(),
@@ -15,7 +20,8 @@ export function UserForm(props) {
         validateOnChange: false,
         onSubmit: async (formValue) => {
             try {
-                console.log(formValue);
+                await userController.createUser(accessToken, formValue);
+                close();
             } catch (error) {
                 console.error(error);
             }
@@ -34,7 +40,7 @@ export function UserForm(props) {
     })
 
     const getAvatar = () => {
-        if(formik.values.fileAvatar){
+        if (formik.values.fileAvatar) {
             return formik.values.avatar;
         }
         return image.noAvatar;

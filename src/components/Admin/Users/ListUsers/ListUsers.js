@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { Loader } from "semantic-ui-react";
-import { size } from "lodash";
+import { size, map } from "lodash";
 import { User } from "../../../../api";
 import { useAuth } from "../../../../hooks";
+import { UserItem } from "../UserItem";
 
 const userController = new User();
 
 
 export function ListUsers(props) {
-    const { usersActive } = props;
+    const { usersActive, reload } = props;
     const [users, setUsers] = useState(null);
     const { accessToken } = useAuth();
 
@@ -22,15 +23,10 @@ export function ListUsers(props) {
                 console.error(error);
             }
         })()
-    }, [usersActive])
+    }, [usersActive, reload]);
 
     if (!users) return <Loader active inline="centered" />
     if (size(users) === 0) return "No hay ningún usuario";
 
-    return (
-        <div>
-            <h2>Estamos viendo los usuarios</h2>
-            <p>{usersActive ? "Activos" : "Inactivos"}</p>
-        </div >
-    )
+    return map(users, (user) => <UserItem key={user._id} user={user} />);
 }

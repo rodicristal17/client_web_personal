@@ -57,7 +57,7 @@ export class User {
 
     async getUsers(accessToken, active = undefined) {
         try {
-            const url = `${this.baseApi}/${ENV.API_ROUTES.USERS}?active = ${active}`;
+            const url = `${this.baseApi}/${ENV.API_ROUTES.USERS}?active=${active}`;
             const params = {
                 headers: {
                     Authorization: `Bearer ${accessToken}`

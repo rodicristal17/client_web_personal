@@ -21,6 +21,7 @@ export function UserForm(props) {
         onSubmit: async (formValue) => {
             try {
                 await userController.createUser(accessToken, formValue);
+                onReload();
                 close();
             } catch (error) {
                 console.error(error);

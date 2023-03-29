@@ -4,6 +4,7 @@ import { image } from "../../../../assets";
 import { ENV } from "../../../../utils";
 import "./UserItem.scss";
 import { BasicModal } from "../../../Shared";
+import { UserForm } from "../UserForm";
 
 export function UserItem(props) {
     const { user } = props;
@@ -39,10 +40,10 @@ export function UserItem(props) {
                         <Icon name='trash' />
                     </Button>
                 </div>
-            </div>
 
+            </div>
             <BasicModal show={showModal} close={onOpenCloseModal} title={titleModal}>
-                <p>UserForm</p>
+                <UserForm close={onOpenCloseModal} onReload={() => console.log("RELOAD")} user={user} />
             </BasicModal>
         </>
     )

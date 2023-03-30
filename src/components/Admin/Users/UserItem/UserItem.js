@@ -47,6 +47,22 @@ export function UserItem(props) {
         }
     };
 
+    const openDeleteConfirm = () => {
+        setIsDelete(true);
+        setConfirmMessage(`Eliminar usuario ${user.email}`);
+        onOpenCloseConfirm();
+    }
+
+    const onDelete = async () => {
+        try {
+            await userController.deleteUser(accessToken, user._id);
+            onReload();
+            onOpenCloseConfirm();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
 
     return (
         <>
@@ -66,7 +82,7 @@ export function UserItem(props) {
                     <Button icon color={user.active ? "orange" : "teal"} onClick={openDesactivateActivateConfirm}>
                         <Icon name={user.active ? "ban" : "check"} />
                     </Button>
-                    <Button icon color='red'>
+                    <Button icon color='red' onClick={openDeleteConfirm}>
                         <Icon name='trash' />
                     </Button>
                 </div>
@@ -77,7 +93,12 @@ export function UserItem(props) {
                 <UserForm close={onOpenCloseModal} onReload={onReload} user={user} />
             </BasicModal>
 
-            <Confirm open={showConfirm} onCancel={onOpenCloseConfirm} onConfirm={isDelete ? () => console.log("Confirm delete") : onActivateDesactivate} content={confirmMessage} size="mini" />
+            <Confirm
+                open={showConfirm}
+                onCancel={onOpenCloseConfirm}
+                onConfirm={isDelete ? onDelete : onActivateDesactivate}
+                content={confirmMessage}
+                size="mini" />
         </>
     )
 }

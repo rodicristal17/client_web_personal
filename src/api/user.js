@@ -116,7 +116,7 @@ export class User {
 
     async deleteUser(accessToken, idUser) {
         try {
-            
+
             const url = `${ENV.BASE_API}/${ENV.API_ROUTES.USER}/${idUser}`;
 
             const params = {
@@ -129,7 +129,7 @@ export class User {
             const response = await fetch(url, params);
             const result = await response.json();
 
-            if (response !== 200) throw result;
+            if (response.status !== 200) throw result;
             return result;
 
         } catch (error) {

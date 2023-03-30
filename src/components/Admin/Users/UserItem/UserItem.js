@@ -5,17 +5,47 @@ import { ENV } from "../../../../utils";
 import "./UserItem.scss";
 import { BasicModal } from "../../../Shared";
 import { UserForm } from "../UserForm";
+import { User } from "../../../../api";
+import { useAuth } from "../../../../hooks";
+
+const userController = new User();
 
 export function UserItem(props) {
-    const { user } = props;
+    const { user, onReload } = props;
+    const { accessToken } = useAuth();
+
     const [showModal, setShowModal] = useState(false);
     const [titleModal, setTitleModal] = useState("");
 
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [confirmMessage, setConfirmMessage] = useState("");
+    const [isDelete, setIsDelete] = useState(false);
+
     const onOpenCloseModal = () => setShowModal((prevState) => !prevState);
+    const onOpenCloseConfirm = () => setShowConfirm((prevState) => !prevState);
+
     const openUpdateUser = () => {
         setTitleModal(`Actualizar ${user.email}`);
         onOpenCloseModal();
+    };
+
+    const openDesactivateActivateConfirm = () => {
+        setIsDelete(false);
+        setConfirmMessage(user.activate ? `Desactivar usuario ${user.email}` : `Activar usuario ${user.email}`);
+        onOpenCloseConfirm();
     }
+
+    const onActivateDesactivate = async () => {
+        try {
+            await userController.updateUser(accessToken, user._id, {
+                active: !user.active
+            });
+            onReload();
+            onOpenCloseConfirm();
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
 
     return (
@@ -33,7 +63,7 @@ export function UserItem(props) {
                     <Button icon primary onClick={openUpdateUser}>
                         <Icon name='pencil' />
                     </Button>
-                    <Button icon color={user.active ? "orange" : "teal"}>
+                    <Button icon color={user.active ? "orange" : "teal"} onClick={openDesactivateActivateConfirm}>
                         <Icon name={user.active ? "ban" : "check"} />
                     </Button>
                     <Button icon color='red'>
@@ -42,9 +72,12 @@ export function UserItem(props) {
                 </div>
 
             </div>
+
             <BasicModal show={showModal} close={onOpenCloseModal} title={titleModal}>
-                <UserForm close={onOpenCloseModal} onReload={() => console.log("RELOAD")} user={user} />
+                <UserForm close={onOpenCloseModal} onReload={onReload} user={user} />
             </BasicModal>
+
+            <Confirm open={showConfirm} onCancel={onOpenCloseConfirm} onConfirm={isDelete ? () => console.log("Confirm delete") : onActivateDesactivate} content={confirmMessage} size="mini" />
         </>
     )
 }

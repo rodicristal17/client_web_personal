@@ -9,7 +9,7 @@ const userController = new User();
 
 
 export function ListUsers(props) {
-    const { usersActive, reload } = props;
+    const { usersActive, reload, onReload } = props;
     const [users, setUsers] = useState(null);
     const { accessToken } = useAuth();
 
@@ -28,5 +28,5 @@ export function ListUsers(props) {
     if (!users) return <Loader active inline="centered" />
     if (size(users) === 0) return "No hay ningún usuario";
 
-    return map(users, (user) => <UserItem key={user._id} user={user} />);
+    return map(users, (user) => <UserItem key={user._id} user={user} onReload={onReload} />);
 }

@@ -44,7 +44,7 @@ export function MenuItem(props) {
             </div>
 
             <BasicModal show={showModal} close={onOpenCloseModal} title={titleModal}>
-
+                <MenuForm onClose={}/>
             </BasicModal>
         </>
     );

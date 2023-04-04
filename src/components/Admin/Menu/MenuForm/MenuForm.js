@@ -12,7 +12,7 @@ export function MenuForm(props) {
   const { accessToken } = useAuth();
 
   const formik = useFormik({
-    initialValues: initialValues(),
+    initialValues: initialValues(menu),
     validationSchema: validationSchema(),
     validateOnChange: false,
     onSubmit: async (formValue) => {
@@ -23,10 +23,11 @@ export function MenuForm(props) {
           order: formValue.order,
           active: formValue.active
         }
-        if(menu){
-          console.log("UPDATE MENU");
-        }else{
-          await menuController.createMenu(accessToken,data);
+        if (menu) {
+          data.path = formValue.path;
+          await menuController.updateMenu(accessToken, menu._id, data);
+        } else {
+          await menuController.createMenu(accessToken, data);
         }
 
         onReload();
